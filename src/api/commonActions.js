@@ -22,7 +22,15 @@ function auth() {
 
 function certificate() {
   return {
-    verifyCertificate: (id, token) =>
+    getAll: (token) =>
+      instance.get(`/admin/certificates`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    get: (token, id) =>
+      instance.get(`/admin/certificates/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    verifyCertificate: (token, id) =>
       instance.put(`/admin/verify-certificate?cer_id=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
@@ -33,7 +41,7 @@ function diseases() {
   return {
     getAllDiseases: () => instance.get(`/diseases`),
     getDisease: (id) => instance.get(`/diseases/${id}`),
-    createDisease: (request, token) =>
+    create: (request, token) =>
       instance.post(
         `/admin/diseases/create`,
         {
@@ -51,7 +59,7 @@ function diseases() {
           headers: { Authorization: `Bearer ${token}` },
         }
       ),
-    updateBlog: (request, token, id) =>
+    update: (request, token, id) =>
       instance.patch(
         `/admin/diseases/${id}/update`,
         {
@@ -69,7 +77,7 @@ function diseases() {
           headers: { Authorization: `Bearer ${token}` },
         }
       ),
-    deleteBlog: (token, id) =>
+    delete: (token, id) =>
       instance.delete(`/admin/diseases/${id}/delete`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
@@ -80,7 +88,7 @@ function blogs() {
   return {
     getAllBlogs: () => instance.get(`/blogs`),
     getBlog: (id) => instance.get(`/blogs/${id}`),
-    createBlog: (request, token) =>
+    create: (request, token) =>
       instance.post(
         `/admin/blogs/create`,
         {
@@ -92,7 +100,7 @@ function blogs() {
           headers: { Authorization: `Bearer ${token}` },
         }
       ),
-    updateBlog: (request, token, id) =>
+    update: (request, token, id) =>
       instance.patch(
         `/admin/blogs/${id}/update`,
         {
@@ -104,7 +112,7 @@ function blogs() {
           headers: { Authorization: `Bearer ${token}` },
         }
       ),
-    deleteBlog: (token, id) =>
+    delete: (token, id) =>
       instance.delete(`/admin/blogs/${id}/delete`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
@@ -114,6 +122,7 @@ function blogs() {
 function specialists() {
   return {
     getAll: () => instance.get(`/specialists`),
+    get: (id) => instance.get(`/specialists/${id}`),
     create: (specialistName, token) =>
       instance.post(
         `/admin/specialists/create`,

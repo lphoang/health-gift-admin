@@ -57,6 +57,36 @@ export const getBlog = (id) => async (dispatch) => {
   }
 };
 
+export const createBlog = (request, token) => async (dispatch) => {
+  dispatch(actions.loading);
+  try {
+    const response = await api().blogs().create(request, token);
+    dispatch(actions.blogDone(response.data));
+  } catch (error) {
+    dispatch(actions.error(getErrorMsg(error)));
+  }
+};
+
+export const updateBlog = (request, token, id) => async (dispatch) => {
+  dispatch(actions.loading);
+  try {
+    const response = await api().blogs().update(request, token, id);
+    dispatch(actions.blogDone(response.data));
+  } catch (error) {
+    dispatch(actions.error(getErrorMsg(error)));
+  }
+};
+
+export const deleteBlog = (token, id) => async (dispatch) => {
+  dispatch(actions.loading);
+  try {
+    const response = await api().blogs().delete(token, id);
+    dispatch(actions.blogDone(response.data));
+  } catch (error) {
+    dispatch(actions.error(getErrorMsg(error)));
+  }
+};
+
 export const actions = blogSlice.actions;
 
 export const selectApiState = (state) => state.auth.apiState;

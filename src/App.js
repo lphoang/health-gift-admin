@@ -2,6 +2,7 @@ import Dashboard from "./components/Dashboard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import Diseases from "./components/Diseases";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
         <Sidebar />
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/diseases" element={<Dashboard />} />
+          <Route path="/diseases" element={<Diseases />} />
         </Routes>
       </Router>
     </div>

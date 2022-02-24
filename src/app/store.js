@@ -1,4 +1,4 @@
-// import { rootReducer } from './../features/rootReducer';
+import { rootReducer } from '../features/rootReducer';
 import { configureStore } from "@reduxjs/toolkit";
 import { loadState, saveState } from "./stateLs";
 
@@ -6,7 +6,7 @@ const persistedStore = loadState();
 
 export const store = configureStore({
   preloadedState: persistedStore,
-  // reducer: rootReducer,
+  reducer: rootReducer,
   devTools: true,
 });
 

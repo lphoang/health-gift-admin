@@ -30,6 +30,7 @@ export function getInitialUserInfo() {
 
 export function getInitialDiseaseInfo() {
   return {
+    id: "",
     name: "",
     overview: "",
     cause: "",
@@ -44,6 +45,7 @@ export function getInitialDiseaseInfo() {
 
 export function getInitialBlogInfo() {
   return {
+    id: "",
     title: "",
     body: "",
     imageUrl: [],
