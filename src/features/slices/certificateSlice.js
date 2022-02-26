@@ -65,7 +65,7 @@ export const getCertificate = (token, id) => async (dispatch) => {
 export const verifyCertificate = (token, id) => async (dispatch) => {
   dispatch(actions.loading);
   try {
-    await api().verifyCertificate().verifyCertificate(token, id);
+    await api().certificate().verifyCertificate(token, id);
     dispatch(actions.verifySuccess());
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));

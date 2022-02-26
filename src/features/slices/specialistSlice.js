@@ -51,7 +51,7 @@ export const getSpecialist = (id) => async (dispatch) => {
   dispatch(actions.loading);
   try {
     const response = await api().specialists().get(id);
-    dispatch(actions.specialistsDone(response.data));
+    dispatch(actions.specialistDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
   }
@@ -61,7 +61,7 @@ export const createSpecialist = (request, token) => async (dispatch) => {
   dispatch(actions.loading);
   try {
     const response = await api().specialists().create(request, token);
-    dispatch(actions.specialistsDone(response.data));
+    dispatch(actions.specialistDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
   }
@@ -71,7 +71,7 @@ export const updateSpecialist = (request, token, id) => async (dispatch) => {
   dispatch(actions.loading);
   try {
     const response = await api().specialists().update(request, token, id);
-    dispatch(actions.specialistsDone(response.data));
+    dispatch(actions.specialistDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
   }

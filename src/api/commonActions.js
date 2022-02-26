@@ -46,6 +46,7 @@ function diseases() {
         `/admin/diseases/create`,
         {
           name: request.name,
+          imageUrl: request.imageUrl,
           overview: request.overview,
           cause: request.cause,
           objects: request.objects,
@@ -64,6 +65,7 @@ function diseases() {
         `/admin/diseases/${id}/update`,
         {
           name: request.name,
+          imageUrl: request.imageUrl,
           overview: request.overview,
           cause: request.cause,
           objects: request.objects,
@@ -124,28 +126,34 @@ function specialists() {
     getAll: () => instance.get(`/specialists`),
     get: (id) => instance.get(`/specialists/${id}`),
     create: (specialistName, token) =>
-      instance.post(
-        `/admin/specialists/create`,
-        {
-          specialistName: specialistName,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ),
+      instance.post(`/admin/specialists/create`, specialistName, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
     update: (specialistName, token, id) =>
-      instance.patch(
-        `/admin/specialists/${id}/update`,
-        {
-          specialistName: specialistName,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      ),
+      instance.patch(`/admin/specialists/${id}/update`, specialistName, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
     delete: (token, id) =>
       instance.delete(`/admin/specialists/${id}/delete`, {
         headers: { Authorization: `Bearer ${token}` },
+      }),
+  };
+}
+
+function doctor() {
+  return {
+    getDoctor: (id) => instance.get(`/doctor/${id}`),
+    getAllDoctors: () => instance.get(`/doctor`),
+  };
+}
+
+function bucket() {
+  return {
+    uploadFile: (formData) =>
+      instance.post(`/api/storage/uploadFile`, formData, {
+        headers: {
+          "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
+        },
       }),
   };
 }
@@ -157,5 +165,7 @@ export default function api() {
     blogs,
     specialists,
     certificate,
+    doctor,
+    bucket,
   };
 }

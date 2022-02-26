@@ -70,11 +70,11 @@ function Sidebar(props) {
               </li>
               <li>
                 <Link
-                  to="/admin"
+                  to="/doctors"
                   className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group "
                 >
                   <UsersIcon className="w-6 h-6" />
-                  <span className="ml-3 flex-1 whitespace-nowrap">Admin</span>
+                  <span className="ml-3 flex-1 whitespace-nowrap">Doctors</span>
                 </Link>
               </li>
               <li>

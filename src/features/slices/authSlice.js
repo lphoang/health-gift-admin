@@ -4,7 +4,6 @@ import {
   getErrorMsg,
   getSuccess,
   getLoading,
-  getInitialApi,
   getInitialUserInfo,
 } from "../../api/initialInformation";
 import api from "../../api/commonActions";
@@ -13,7 +12,6 @@ const initialState = {
   isLogged: false,
   verifiedToken: "",
   accessToken: "",
-  apiState: getInitialApi(),
   user: getInitialUserInfo(),
 };
 
@@ -36,7 +34,7 @@ const authSlice = createSlice({
     authDone: (state, action) => {
       state.apiState = getSuccess(state.apiState);
       state.user = action.payload.user;
-      state.isLogged = action.payload.user.enabled;
+      state.isLogged = true;
       state.verifiedToken = action.payload.verifiedToken;
       state.accessToken = action.payload.accessToken;
     },

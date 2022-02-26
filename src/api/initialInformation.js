@@ -32,6 +32,7 @@ export function getInitialDiseaseInfo() {
   return {
     id: "",
     name: "",
+    imageUrl: [],
     overview: "",
     cause: "",
     symptom: "",
@@ -74,21 +75,6 @@ export function getInitialSpecialistInfo() {
   };
 }
 
-export function getInitialDoctorInfo() {
-  return {
-    id: "",
-    doctorId: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    reviewRating: 0,
-    appointments: [],
-    certificates: [],
-    specialists: [],
-    reviews: [],
-  };
-}
-
 export function getInitialCertificateInfo() {
   return {
     id: "",
@@ -101,19 +87,19 @@ export function getInitialCertificateInfo() {
   };
 }
 
-export function getInitialPatientInfo() {
+export function getInitialDoctorInfo() {
   return {
     id: "",
-    patientId: "",
+    doctorId: "",
     email: "",
     firstName: "",
     lastName: "",
-    address: "",
-    birthDate: new Date(),
-    city: "",
-    phoneNumber: "",
-    zipCode: "",
+    avatar: "",
+    reviewRating: 0,
     appointments: [],
+    certificates: [],
+    specialists: [],
+    reviews: [],
   };
 }
 
@@ -145,7 +131,7 @@ export function getError(apiState, errorMessage) {
 export function getErrorMsg(error) {
   let errMsg = "";
   if (error) {
-    errMsg = error.response.data.message;
+    errMsg = error.response?.data.message;
   } else {
     errMsg = `Something wrong happened! ${error.message}`;
   }
