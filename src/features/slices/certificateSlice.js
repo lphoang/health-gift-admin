@@ -43,9 +43,9 @@ const certificateSlice = createSlice({
 });
 
 export const getAllCertificates = (token) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
-    const response = await api().certificate().getAll(token);
+    const response = await api().certificates().getAll(token);
     dispatch(actions.certificatesDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
@@ -53,9 +53,9 @@ export const getAllCertificates = (token) => async (dispatch) => {
 };
 
 export const getCertificate = (token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
-    const response = await api().certificate().get(token, id);
+    const response = await api().certificates().get(token, id);
     dispatch(actions.certificateDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
@@ -63,9 +63,9 @@ export const getCertificate = (token, id) => async (dispatch) => {
 };
 
 export const verifyCertificate = (token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
-    await api().certificate().verifyCertificate(token, id);
+    await api().certificates().verifyCertificate(token, id);
     dispatch(actions.verifySuccess());
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));

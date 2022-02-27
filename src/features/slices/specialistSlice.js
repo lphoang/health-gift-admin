@@ -38,7 +38,7 @@ const specialistSlice = createSlice({
 });
 
 export const getAllSpecialists = () => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().specialists().getAll();
     dispatch(actions.specialistsDone(response.data));
@@ -48,7 +48,7 @@ export const getAllSpecialists = () => async (dispatch) => {
 };
 
 export const getSpecialist = (id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().specialists().get(id);
     dispatch(actions.specialistDone(response.data));
@@ -58,7 +58,7 @@ export const getSpecialist = (id) => async (dispatch) => {
 };
 
 export const createSpecialist = (request, token) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().specialists().create(request, token);
     dispatch(actions.specialistDone(response.data));
@@ -68,7 +68,7 @@ export const createSpecialist = (request, token) => async (dispatch) => {
 };
 
 export const updateSpecialist = (request, token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().specialists().update(request, token, id);
     dispatch(actions.specialistDone(response.data));
@@ -78,7 +78,7 @@ export const updateSpecialist = (request, token, id) => async (dispatch) => {
 };
 
 export const deleteSpecialist = (token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     await api().specialists().delete(token, id);
   } catch (error) {

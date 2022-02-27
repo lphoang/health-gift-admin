@@ -16,6 +16,12 @@ import EditDisease from "./components/Disease/EditDisease";
 import EditBlog from "./components/Blog/EditBlog";
 import EditSpecialist from "./components/Specialist/EditSpecialist";
 import Certificate from "./components/Certificate/Certificate";
+import Hospitals from "./components/Hospital/Hospitals";
+import EditHospital from "./components/Hospital/EditHospital";
+import CreateHospital from "./components/Hospital/CreateHospital";
+import EditDoctor from "./components/Doctor/EditDoctor";
+import CreateDoctor from "./components/Doctor/CreateDoctor";
+import Logout from "./components/Logout";
 
 function App() {
   return (
@@ -29,8 +35,17 @@ function App() {
               <div className="box-border p-4 border-4 bg-white rounded-md min-h-screen">
                 <div className="container my-12 mx-auto px-4 md:px-12">
                   <Routes>
+                    <Route exact path="/logout" element={<Logout/>} />
                     <Route path="/" element={<Dashboard />}>
                       <Route path="/doctors" element={<Doctors />} />
+                      <Route
+                        path="/doctors/:id/edit"
+                        element={<EditDoctor />}
+                      />
+                      <Route
+                        path="/doctors/create"
+                        element={<CreateDoctor />}
+                      />
                       <Route path="/diseases" element={<Diseases />} />
                       <Route
                         path="/diseases/:id/edit"
@@ -39,6 +54,15 @@ function App() {
                       <Route
                         path="/diseases/create"
                         element={<CreateDisease />}
+                      />
+                      <Route path="/hospitals" element={<Hospitals />} />
+                      <Route
+                        path="/hospitals/:id/edit"
+                        element={<EditHospital />}
+                      />
+                      <Route
+                        path="/hospitals/create"
+                        element={<CreateHospital />}
                       />
                       <Route path="/blogs" element={<Blogs />} />
                       <Route path="/blogs/:id/edit" element={<EditBlog />} />

@@ -87,6 +87,19 @@ export function getInitialCertificateInfo() {
   };
 }
 
+export function getInitialHospitalInfo(){
+  return {
+    id: "",
+    hospitalName: "",
+    doctors: [],
+    since: new Date(),
+    imageUrl: [],
+    address: "",
+    description: "",
+    specialists: []
+  }
+}
+
 export function getInitialDoctorInfo() {
   return {
     id: "",
@@ -98,7 +111,7 @@ export function getInitialDoctorInfo() {
     reviewRating: 0,
     appointments: [],
     certificates: [],
-    specialists: [],
+    specialist: null,
     reviews: [],
   };
 }

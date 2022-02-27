@@ -38,7 +38,7 @@ const blogSlice = createSlice({
 });
 
 export const getAllBlogs = () => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().blogs().getAllBlogs();
     dispatch(actions.blogsDone(response.data));
@@ -48,7 +48,7 @@ export const getAllBlogs = () => async (dispatch) => {
 };
 
 export const getBlog = (id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().blogs().getBlog(id);
     dispatch(actions.blogDone(response.data));
@@ -58,7 +58,7 @@ export const getBlog = (id) => async (dispatch) => {
 };
 
 export const createBlog = (request, token) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().blogs().create(request, token);
     dispatch(actions.blogDone(response.data));
@@ -68,7 +68,7 @@ export const createBlog = (request, token) => async (dispatch) => {
 };
 
 export const updateBlog = (request, token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().blogs().update(request, token, id);
     dispatch(actions.blogDone(response.data));
@@ -78,7 +78,7 @@ export const updateBlog = (request, token, id) => async (dispatch) => {
 };
 
 export const deleteBlog = (token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().blogs().delete(token, id);
     dispatch(actions.blogDone(response.data));

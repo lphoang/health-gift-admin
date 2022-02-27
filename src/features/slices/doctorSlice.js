@@ -6,6 +6,7 @@ import {
   getLoading,
   getInitialApi,
   getInitialDoctorInfo,
+  getInitialUserInfo,
 } from "../../api/initialInformation";
 import api from "../../api/commonActions";
 
@@ -14,6 +15,7 @@ const initialState = {
   apiState: getInitialApi(),
   doctors: initialDoctors,
   doctor: getInitialDoctorInfo(),
+  user: null,
 };
 
 const doctorSlice = createSlice({
@@ -27,6 +29,10 @@ const doctorSlice = createSlice({
       state.apiState = getSuccess(state.apiState);
       state.doctors = action.payload;
     },
+    userDone: (state, action) => {
+      state.apiState = getSuccess(state.apiState);
+      state.user = action.payload;
+    },
     doctorDone: (state, action) => {
       state.apiState = getSuccess(state.apiState);
       state.doctor = action.payload;
@@ -38,9 +44,9 @@ const doctorSlice = createSlice({
 });
 
 export const getAllDoctors = () => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
-    const response = await api().doctor().getAllDoctors();
+    const response = await api().doctors().getAllDoctors();
     dispatch(actions.doctorsDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));
@@ -48,9 +54,39 @@ export const getAllDoctors = () => async (dispatch) => {
 };
 
 export const getDoctor = (id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
-    const response = await api().doctor().getDoctor(id);
+    const response = await api().doctors().getDoctor(id);
+    dispatch(actions.doctorDone(response.data));
+  } catch (error) {
+    dispatch(actions.error(getErrorMsg(error)));
+  }
+};
+
+export const createDoctor = (request) => async (dispatch) => {
+  dispatch(actions.loading());
+  try {
+    const response = await api().doctors().createDoctor(request);
+    dispatch(actions.userDone(response.data));
+  } catch (error) {
+    dispatch(actions.error(getErrorMsg(error)));
+  }
+};
+
+export const updateUserInfo = (request, token, id) => async (dispatch) => {
+  dispatch(actions.loading());
+  try {
+    const response = await api().doctors().updateUserInfo(request, token, id);
+    dispatch(actions.userDone(response.data));
+  } catch (error) {
+    dispatch(actions.authError(getErrorMsg(error)));
+  }
+};
+
+export const updateDoctor = (request, token, id) => async (dispatch) => {
+  dispatch(actions.loading());
+  try {
+    const response = await api().doctors().updateDoctor(request, token, id);
     dispatch(actions.doctorDone(response.data));
   } catch (error) {
     dispatch(actions.error(getErrorMsg(error)));

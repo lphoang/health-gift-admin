@@ -28,8 +28,8 @@ const authSlice = createSlice({
     authLoading: (state) => {
       state.apiState = getLoading();
     },
-    authLogout: () => {
-      return initialState;
+    authLogout: (state) => {
+      state = initialState();
     },
     authDone: (state, action) => {
       state.apiState = getSuccess(state.apiState);
@@ -81,10 +81,14 @@ export const getUserInfo =
     } catch (error) {}
   };
 
-export const authLogout = (dispatch) => {
+export const authLogout = () => (dispatch) => {
   dispatch(actions.authLoading());
-  dispatch(actions.authLogout());
-  localStorage.removeItem("state");
+  try {
+    dispatch(actions.authLogout());
+    localStorage.removeItem("state");
+  } catch (error) {
+    dispatch(actions.authError(getErrorMsg(error)));
+  }
 };
 
 export const actions = authSlice.actions;

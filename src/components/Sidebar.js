@@ -8,6 +8,7 @@ import {
   AcademicCapIcon,
   ExclamationIcon,
   LogoutIcon,
+  OfficeBuildingIcon
 } from "@heroicons/react/outline";
 
 function Sidebar(props) {
@@ -66,6 +67,15 @@ function Sidebar(props) {
                   <span className="ml-3 flex-1 whitespace-nowrap">
                     Certificates
                   </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/hospitals"
+                  className="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group "
+                >
+                  <OfficeBuildingIcon className="w-6 h-6" />
+                  <span className="ml-3 flex-1 whitespace-nowrap">Hospitals</span>
                 </Link>
               </li>
               <li>

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBlog } from "../../features/slices/blogSlice";
-import { getInitialBlogInfo } from "../../api/initialInformation";
-import { setEmptyBucket, uploadFile } from "../../features/slices/bucketSlice";
+import { updateHospital, getHospital } from "../../features/slices/hospitalSlice";
+import { uploadFile, setEmptyBucket } from "../../features/slices/bucketSlice";
 import { Loading } from "../Loading";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function CreateBlog() {
+function EditHospital() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [blog, setBlog] = useState(getInitialBlogInfo());
+  const calledHospital = useSelector(state => state.hospitals?.hospital);
+  const [hospital, setHospital] = useState(calledHospital);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const token = state.auth?.accessToken;
 
@@ -29,35 +30,42 @@ function CreateBlog() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(createBlog(blog, token));
-    alert("Add successfully");
-    navigate("/blogs");
+    dispatch(updateHospital(hospital, token, id));
+    console.log(hospital);
+    alert("Updated successfully");
+    navigate("/hospitals");
   };
 
   useEffect(() => {
     if (
-      !blog.imageUrl.includes(state.buckets?.uploadFileUrl) &&
+      !hospital.imageUrl.includes(state.buckets?.uploadFileUrl) &&
       state.buckets.uploadFileUrl !== ""
     ) {
-      blog.imageUrl.push(state.buckets?.uploadFileUrl);
-      setBlog({
-        ...blog,
-        imageUrl: blog.imageUrl,
+      hospital.imageUrl.push(state.buckets?.uploadFileUrl);
+
+      setHospital({
+        ...hospital,
+        imageUrl: hospital.imageUrl,
       });
     }
     dispatch(setEmptyBucket());
   }, [state.buckets.uploadFileUrl]);
 
+  useEffect(() => {
+    dispatch(getHospital(id));
+  },[id])
+
+
   return (
     <div>
-      {state.blogs?.apiState.isLoading && <Loading />}
+      {state.hospitals?.apiState.isLoading && <Loading />}
       <div>
         <h3 className="text-center text-lg leading-6 font-medium text-gray-900">
-          Create new Blog
+          Create new Hospital
         </h3>
       </div>
       <form
-        className="mt-8 space-y-12 w-1/2 mx-auto"
+        className="mt-8 space-y-12 w-2/3 mx-auto"
         onSubmit={onSubmitHandler}
       >
         <input type="hidden" name="remember" defaultValue="true" />
@@ -66,21 +74,22 @@ function CreateBlog() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="title"
+                htmlFor="Name"
               >
-                Title
+                Hospital Name
               </label>
             </div>
             <div className="md:w-2/3">
               <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 type="text"
-                placeholder="Title of a blog"
-                name="title"
+                placeholder="Name"
+                value={hospital?.hospitalName}
+                name="name"
                 onChange={(e) =>
-                  setBlog({
-                    ...blog,
-                    title: e.target.value,
+                  setHospital({
+                    ...hospital,
+                    hospitalName: e.target.value,
                   })
                 }
                 required
@@ -91,20 +100,21 @@ function CreateBlog() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="body"
+                htmlFor="description"
               >
-                Body
+                Description
               </label>
             </div>
             <div className="md:w-2/3">
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Body"
-                name="body"
+                placeholder="Description"
+                value={hospital?.description}
+                name="description"
                 onChange={(e) =>
-                  setBlog({
-                    ...blog,
-                    body: e.target.value,
+                  setHospital({
+                    ...hospital,
+                    description: e.target.value,
                   })
                 }
                 required
@@ -112,7 +122,7 @@ function CreateBlog() {
             </div>
           </div>
           <div className="relative flex items-center justify-start mb-5">
-            {Array.prototype.map.call(blog.imageUrl, (image, index) => {
+            {Array.prototype.map.call(hospital?.imageUrl, (image, index) => {
               return (
                 <img
                   key={index}
@@ -136,7 +146,8 @@ function CreateBlog() {
               <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 type="file"
-                placeholder="imageUrl"
+                placeholder="Image Url"
+                name="imageUrl"
                 onChange={onChangeImage}
                 required
               />
@@ -146,6 +157,58 @@ function CreateBlog() {
               >
                 Upload
               </button>
+            </div>
+          </div>
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label
+                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
+                htmlFor="since"
+              >
+                Since
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <input
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                placeholder="Since"
+                type="date"
+                value={hospital?.since}
+                name="since"
+                onChange={(e) =>
+                  setHospital({
+                    ...hospital,
+                    since: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+          </div>
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label
+                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
+                htmlFor="address"
+              >
+                Address
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <input
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                placeholder="Address"
+                type="text"
+                value={hospital?.address}
+                name="address"
+                onChange={(e) =>
+                  setHospital({
+                    ...hospital,
+                    address: e.target.value,
+                  })
+                }
+                required
+              />
             </div>
           </div>
           <div>
@@ -162,4 +225,4 @@ function CreateBlog() {
   );
 }
 
-export default CreateBlog;
+export default EditHospital;

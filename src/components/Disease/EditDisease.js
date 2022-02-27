@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDisease, updateDisease } from "../../features/slices/diseaseSlice";
-import { getInitialDiseaseInfo } from "../../api/initialInformation";
 import { uploadFile, setEmptyBucket } from "../../features/slices/bucketSlice";
 import { Loading } from "../Loading";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +8,8 @@ import { useNavigate, useParams } from "react-router-dom";
 function EditDisease() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [disease, setDisease] = useState(getInitialDiseaseInfo());
+  const calledDisease = useSelector(state => state.diseases?.disease);
+  const [disease, setDisease] = useState(calledDisease);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -56,7 +56,7 @@ function EditDisease() {
 
   return (
     <div>
-      {state.bucket?.apiState.isLoading && <Loading />}
+      {state.diseases?.apiState.isLoading && <Loading />}
       <div>
         <h3 className="text-center text-lg leading-6 font-medium text-gray-900">
           Update Disease
@@ -83,7 +83,7 @@ function EditDisease() {
                 type="text"
                 placeholder="Name"
                 name="name"
-                value={state.diseases.disease.name}
+                value={disease.name}
                 disabled
               />
             </div>
@@ -108,7 +108,7 @@ function EditDisease() {
                     overview: e.target.value,
                   })
                 }
-                value={state.diseases.disease?.overview}
+                value={disease?.overview}
                 required
               />
             </div>
@@ -164,7 +164,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Cause"
-                value={state.diseases.disease?.cause}
+                value={disease?.cause}
                 name="cause"
                 onChange={(e) =>
                   setDisease({
@@ -189,7 +189,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Symptom"
-                value={state.diseases.disease?.symptom}
+                value={disease?.symptom}
                 name="symptom"
                 onChange={(e) =>
                   setDisease({
@@ -214,7 +214,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Objects"
-                value={state.diseases.disease?.objects}
+                value={disease?.objects}
                 name="objects"
                 onChange={(e) =>
                   setDisease({
@@ -239,7 +239,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Routes of transmissions"
-                value={state.diseases.disease?.routesOfTransmission}
+                value={disease?.routesOfTransmission}
                 name="routeOfTransmissions"
                 onChange={(e) =>
                   setDisease({
@@ -264,7 +264,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Precautions"
-                value={state.diseases.disease?.precautions}
+                value={disease?.precautions}
                 name="precautions"
                 onChange={(e) =>
                   setDisease({
@@ -289,7 +289,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Diagnosis"
-                value={state.diseases.disease?.diagnosis}
+                value={disease?.diagnosis}
                 name="diagnosis"
                 onChange={(e) =>
                   setDisease({
@@ -314,7 +314,7 @@ function EditDisease() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Treatment Measures"
-                value={state.diseases.disease?.treatmentMeasures}
+                value={disease?.treatmentMeasures}
                 name="treatmentMeasures"
                 onChange={(e) =>
                   setDisease({

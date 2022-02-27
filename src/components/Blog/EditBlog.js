@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getBlog, updateBlog } from "../../features/slices/blogSlice";
-import { getInitialBlogInfo } from "../../api/initialInformation";
 import { setEmptyBucket, uploadFile } from "../../features/slices/bucketSlice";
 import { Loading } from "../Loading";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +8,8 @@ import { useNavigate, useParams } from "react-router-dom";
 function EditBlog() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [blog, setBlog] = useState(getInitialBlogInfo());
+  const calledBlog = useSelector(state => state.blogs?.blog)
+  const [blog, setBlog] = useState(calledBlog);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -55,7 +55,7 @@ function EditBlog() {
 
   return (
     <div>
-      {state.bucket?.apiState.isLoading && <Loading />}
+      {state.blogs?.apiState.isLoading && <Loading />}
       <div>
         <h3 className="text-center text-lg leading-6 font-medium text-gray-900">
           Update Blog
@@ -82,7 +82,7 @@ function EditBlog() {
                 type="text"
                 placeholder="Title of a blog"
                 name="title"
-                value={state.blogs.blog?.title}
+                value={blog?.title}
                 onChange={(e) =>
                   setBlog({
                     ...blog,
@@ -106,7 +106,7 @@ function EditBlog() {
               <textarea
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 placeholder="Body"
-                value={state.blogs.blog?.body}
+                value={blog?.body}
                 name="body"
                 onChange={(e) =>
                   setBlog({

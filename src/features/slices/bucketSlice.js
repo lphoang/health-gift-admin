@@ -34,7 +34,7 @@ const bucketSlice = createSlice({
 });
 
 export const uploadFile = (formData) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const res = await api().bucket().uploadFile(formData);
     dispatch(actions.uploadSuccess(res.data));
@@ -44,7 +44,7 @@ export const uploadFile = (formData) => async (dispatch) => {
 };
 
 export const setEmptyBucket = () => async (dispatch) => {
-    dispatch(actions.loading);
+  dispatch(actions.loading());
     try {
       dispatch(actions.setEmptyBucket());
     } catch (error) {

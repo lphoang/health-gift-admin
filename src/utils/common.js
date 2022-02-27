@@ -33,3 +33,12 @@ export default function formatDate(dateArr) {
     return `${hour}h ${minutues}m ${seconds}s - ${day}/${month}/${year}`;
   }
 }
+
+export const formatDay = (dateArr) => {
+  if (dateArr !== null && dateArr.length === 3) {
+    let year = dateArr[0].length === 1 ? `0${dateArr[0]}` : dateArr[0];
+    let month = dateArr[1].length === 1 ? `0${dateArr[1]}` : dateArr[1];
+    let day = dateArr[2];
+    return `${year}-${month}-${day}`;
+  }
+}

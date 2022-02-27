@@ -14,13 +14,13 @@ function auth() {
     register: (request) => instance.post("/admin/register", request),
     login: (request) => instance.post("/admin/login", request),
     getUserInfo: (token, id) =>
-      instance.get(`/auth/info/${id}`, {
+      instance.get(`/auth/${id}/info`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
   };
 }
 
-function certificate() {
+function certificates() {
   return {
     getAll: (token) =>
       instance.get(`/admin/certificates`, {
@@ -140,10 +140,43 @@ function specialists() {
   };
 }
 
-function doctor() {
+function doctors() {
   return {
     getDoctor: (id) => instance.get(`/doctor/${id}`),
     getAllDoctors: () => instance.get(`/doctor`),
+    createDoctor: (request) =>
+      instance.post("/auth/register", {
+        email: request.email,
+        password: request.password,
+        firstName: request.firstName,
+        lastName: request.lastName,
+        appRole: "DOCTOR",
+      }),
+    updateDoctor: (request, token, id) =>
+      instance.put(
+        `/doctor/${id}/update`,
+        {
+          hospitalName: request.hospitalName,
+          specialistId: request.specialistId,
+          workFrom: request.workFrom,
+          workTo: request.workTo,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ),
+    updateUserInfo: (request, token, id) =>
+      instance.put(
+        `/auth/${id}/update`,
+        {
+          avatar: request.avatar,
+          firstName: request.firstName,
+          lastName: request.lastName,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ),
   };
 }
 
@@ -158,14 +191,50 @@ function bucket() {
   };
 }
 
+function hospitals() {
+  return {
+    create: (request, token) =>
+      instance.post(
+        "/hospitals/create",
+        {
+          hospitalName: request.hospitalName,
+          address: request.address,
+          imageUrl: request.imageUrl,
+          since: request.since,
+          description: request.description,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ),
+    get: (id) => instance.get(`/hospitals/${id}`),
+    getAll: () => instance.get(`/hospitals`),
+    update: (request, token, id) =>
+      instance.put(
+        `/hospitals/${id}/update`,
+        {
+          hospitalName: request.hospitalName,
+          address: request.address,
+          imageUrl: request.imageUrl,
+          since: request.since,
+          description: request.description,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      ),
+  };
+}
+
 export default function api() {
   return {
     auth,
     diseases,
     blogs,
     specialists,
-    certificate,
-    doctor,
+    certificates,
+    doctors,
     bucket,
+    hospitals,
   };
 }

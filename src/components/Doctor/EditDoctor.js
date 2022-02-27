@@ -1,16 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createDisease } from "../../features/slices/diseaseSlice";
-import { getInitialDiseaseInfo } from "../../api/initialInformation";
+import {
+  getDoctor,
+  updateDoctor,
+  updateUserInfo,
+} from "../../features/slices/doctorSlice";
 import { uploadFile, setEmptyBucket } from "../../features/slices/bucketSlice";
 import { Loading } from "../Loading";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getAllSpecialists } from "../../features/slices/specialistSlice";
+import { getAllHospitals } from "../../features/slices/hospitalSlice";
+import { formatDay } from "../../utils/common";
 
-function CreateDisease() {
+function EditDoctor() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  const [disease, setDisease] = useState(getInitialDiseaseInfo());
+  const calledDoctor = useSelector((state) => state.doctors?.doctor);
+  const [doctor, setDoctor] = useState({
+    hospitalName: calledDoctor?.hospital?.hospitalName,
+    specialistId: "",
+    workFrom: calledDoctor.workFrom,
+    workTo: calledDoctor.workTo,
+  });
+  const [user, setUser] = useState({
+    firstName: calledDoctor?.appUser?.firstName,
+    lastName: calledDoctor?.appUser?.lastName,
+    avatar: calledDoctor?.appUser?.avatar,
+  });
+
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const token = state.auth?.accessToken;
 
@@ -29,21 +48,23 @@ function CreateDisease() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(createDisease(disease, token));
-    alert("Added successfully");
-    navigate("/diseases");
+    dispatch(updateDoctor(doctor, token, id));
+    dispatch(updateUserInfo(user, token, id));
+    alert("Updated successfully");
+    navigate("/doctors");
   };
 
   useEffect(() => {
-    if (
-      !disease.imageUrl.includes(state.buckets?.uploadFileUrl) &&
-      state.buckets.uploadFileUrl !== ""
-    ) {
-      disease.imageUrl.push(state.buckets?.uploadFileUrl);
+    dispatch(getDoctor(id));
+    dispatch(getAllSpecialists());
+    dispatch(getAllHospitals());
+  }, [id]);
 
-      setDisease({
-        ...disease,
-        imageUrl: disease.imageUrl,
+  useEffect(() => {
+    if (state.buckets.uploadFileUrl !== "") {
+      setUser({
+        ...user,
+        avatar: state.buckets.uploadFileUrl,
       });
     }
     dispatch(setEmptyBucket());
@@ -51,10 +72,10 @@ function CreateDisease() {
 
   return (
     <div>
-      {state.diseases?.apiState.isLoading && <Loading />}
+      {state.doctors?.apiState.isLoading && <Loading />}
       <div>
         <h3 className="text-center text-lg leading-6 font-medium text-gray-900">
-          Create new Disease
+          Update doctor information
         </h3>
       </div>
       <form
@@ -67,24 +88,24 @@ function CreateDisease() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="Name"
+                htmlFor="firstName"
               >
-                Name
+                First name
               </label>
             </div>
             <div className="md:w-2/3">
               <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 type="text"
-                placeholder="Name"
-                name="name"
+                placeholder="First name"
+                name="firstName"
+                value={user.firstName}
                 onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    name: e.target.value,
+                  setUser({
+                    ...user,
+                    firstName: e.target.value,
                   })
                 }
-                required
               />
             </div>
           </div>
@@ -92,55 +113,51 @@ function CreateDisease() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="overview"
+                htmlFor="lastName"
               >
-                Overview
+                Last name
               </label>
             </div>
             <div className="md:w-2/3">
-              <textarea
+              <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Overview"
-                name="overview"
+                placeholder="Last name"
+                name="lastName"
+                type="text"
                 onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    overview: e.target.value,
+                  setUser({
+                    ...user,
+                    lastName: e.target.value,
                   })
                 }
+                value={user.lastName}
                 required
               />
             </div>
           </div>
-          <div className="relative flex items-center justify-start mb-5">
-            {Array.prototype.map.call(disease.imageUrl, (image, index) => {
-              return (
-                <img
-                  key={index}
-                  src={image}
-                  alt="images"
-                  className="w-64 h-64 rounded-sm border-gray-700 object-cover mr-4"
-                />
-              );
-            })}
+          <div className="relative flex items-center justify-center mb-5">
+            <img
+              src={user?.avatar ? user.avatar : "https://loremflickr.com/g/320/240/paris"}
+              alt="images"
+              className="w-64 h-64 rounded-md border-gray-700 object-cover mr-4"
+            />
           </div>
           <div className="md:flex md:items-center mb-6">
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="imageUrl"
+                htmlFor="avatar"
               >
-                Image
+                Avatar
               </label>
             </div>
             <div className="md:w-2/3">
               <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                 type="file"
-                placeholder="Image Url"
-                name="imageUrl"
+                placeholder="Avatar"
+                name="avatar"
                 onChange={onChangeImage}
-                required
               />
               <button
                 className="mt-4 relative w-24 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -154,20 +171,110 @@ function CreateDisease() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="cause"
+                htmlFor="email"
               >
-                Cause
+                Email
               </label>
             </div>
             <div className="md:w-2/3">
-              <textarea
+              <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Cause"
-                name="cause"
+                placeholder="Email"
+                type="email"
+                value={calledDoctor?.appUser?.email}
+                name="email"
+                disabled
+              />
+            </div>
+          </div>
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label
+                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
+                htmlFor="hospitalName"
+              >
+                Hospital name
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <select
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                placeholder="Hospital name"
+                defaultValue={doctor?.hospitalName}
+                value={doctor?.hospitalName}
+                name="hospitalName"
                 onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    cause: e.target.value,
+                  setDoctor({
+                    ...doctor,
+                    hospitalName: e.target.value,
+                  })
+                }
+                required
+              >
+                {state.hospitals?.hospitals.map((hospital, index) => {
+                  return (
+                    <option value={hospital.hospitalName} key={index}>
+                      {hospital.hospitalName}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label
+                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
+                htmlFor="specialistId"
+              >
+                Specialist
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <select
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                placeholder="Specialist"
+                value={doctor?.specialistId}
+                defaultValue={doctor?.specialistId}
+                name="specialistId"
+                onChange={(e) =>
+                  setDoctor({
+                    ...doctor,
+                    specialistId: e.target.value,
+                  })
+                }
+                required
+              >
+                {state.specialists?.specialists.map((specialist, index) => {
+                  return (
+                    <option value={specialist.specialistId} key={index}>
+                      {specialist.specialistName}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="md:flex md:items-center mb-6">
+            <div className="md:w-1/3">
+              <label
+                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
+                htmlFor="workFrom"
+              >
+                Work from
+              </label>
+            </div>
+            <div className="md:w-2/3">
+              <input
+                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                placeholder="Work from"
+                type="date"
+                value={formatDay(doctor?.workFrom)}
+                name="workFrom"
+                onChange={(e) =>
+                  setDoctor({
+                    ...doctor,
+                    workFrom: e.target.value,
                   })
                 }
                 required
@@ -178,141 +285,22 @@ function CreateDisease() {
             <div className="md:w-1/3">
               <label
                 className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="symptom"
+                htmlFor="workTo"
               >
-                Symptom
+                Work to
               </label>
             </div>
             <div className="md:w-2/3">
-              <textarea
+              <input
                 className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Symptom"
-                name="symptom"
+                placeholder="Work to"
+                type="date"
+                value={formatDay(doctor?.workTo)}
+                name="workTo"
                 onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    symptom: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-          </div>
-
-          <div className="md:flex md:items-center mb-6">
-            <div className="md:w-1/3">
-              <label
-                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="routeOfTransmissions"
-              >
-                Routes of transmissions
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <textarea
-                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Routes of transmissions"
-                name="routeOfTransmissions"
-                onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    routesOfTransmission: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-          </div>
-          <div className="md:flex md:items-center mb-6">
-            <div className="md:w-1/3">
-              <label
-                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="objects"
-              >
-                Objects
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <textarea
-                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Objects"
-                name="objects"
-                onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    objects: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-          </div>
-          <div className="md:flex md:items-center mb-6">
-            <div className="md:w-1/3">
-              <label
-                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="precautions"
-              >
-                Precautions
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <textarea
-                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Precautions"
-                name="precautions"
-                onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    precautions: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-          </div>
-          <div className="md:flex md:items-center mb-6">
-            <div className="md:w-1/3">
-              <label
-                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="diagnosis"
-              >
-                Diagnosis
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <textarea
-                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Diagnosis"
-                name="diagnosis"
-                onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    diagnosis: e.target.value,
-                  })
-                }
-                required
-              />
-            </div>
-          </div>
-          <div className="md:flex md:items-center mb-6">
-            <div className="md:w-1/3">
-              <label
-                className="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4"
-                htmlFor="treatmentMeasures"
-              >
-                Treatment Measures
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <textarea
-                className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                placeholder="Treatment Measures"
-                name="treatmentMeasures"
-                onChange={(e) =>
-                  setDisease({
-                    ...disease,
-                    treatmentMeasures: e.target.value,
+                  setDoctor({
+                    ...doctor,
+                    workTo: e.target.value,
                   })
                 }
                 required
@@ -324,7 +312,7 @@ function CreateDisease() {
               type="submit"
               className="mx-auto relative w-48 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Post
+              Update
             </button>
           </div>
         </div>
@@ -333,4 +321,4 @@ function CreateDisease() {
   );
 }
 
-export default CreateDisease;
+export default EditDoctor;

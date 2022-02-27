@@ -38,7 +38,7 @@ const diseaseSlice = createSlice({
 });
 
 export const getAllDiseases = () => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().diseases().getAllDiseases();
     dispatch(actions.diseasesDone(response.data));
@@ -48,7 +48,7 @@ export const getAllDiseases = () => async (dispatch) => {
 };
 
 export const getDisease = (id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().diseases().getDisease(id);
     dispatch(actions.diseaseDone(response.data));
@@ -58,7 +58,7 @@ export const getDisease = (id) => async (dispatch) => {
 };
 
 export const createDisease = (request, token) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().diseases().create(request, token);
     dispatch(actions.diseaseDone(response.data));
@@ -68,7 +68,7 @@ export const createDisease = (request, token) => async (dispatch) => {
 };
 
 export const updateDisease = (request, token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().diseases().update(request, token, id);
     dispatch(actions.diseaseDone(response.data));
@@ -78,7 +78,7 @@ export const updateDisease = (request, token, id) => async (dispatch) => {
 };
 
 export const deleteDisease = (token, id) => async (dispatch) => {
-  dispatch(actions.loading);
+  dispatch(actions.loading());
   try {
     const response = await api().diseases().delete(token, id);
     dispatch(actions.blogDone(response.data));
